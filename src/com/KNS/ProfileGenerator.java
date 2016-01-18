@@ -11,6 +11,9 @@ public class ProfileGenerator {
 
     public static String genConsensusString(double[][] profile) {
 
+        if (profile == null)
+            return "";
+
         StringBuilder consensusString = new StringBuilder();
 
         for (int pos = 0; pos < profile[0].length; pos++) {
@@ -85,6 +88,9 @@ public class ProfileGenerator {
     }
 
     public static int calcScore(Collection<String> motifs, String consensusString) {
+
+        if (motifs.size() == 0)
+            return Integer.MAX_VALUE;
 
         int score = 0;
         for (String motif : motifs) {
