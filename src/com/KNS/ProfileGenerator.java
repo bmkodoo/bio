@@ -84,6 +84,19 @@ public class ProfileGenerator {
         return profile;
     }
 
+    public static int calcScore(Collection<String> motifs, String consensusString) {
+
+        int score = 0;
+        for (String motif : motifs) {
+            for (int i = 0; i < motif.length(); i++) {
+                if (motif.charAt(i) != consensusString.charAt(i))
+                    score++;
+            }
+        }
+
+        return score;
+    }
+
     public static void main(String[] args) {
 
         Collection<String> motifs = new LinkedList<>();
@@ -97,5 +110,8 @@ public class ProfileGenerator {
 
         String cons = genConsensusString(profile);
         System.out.printf("Consensus sting: %s\n", cons);
+
+        int score = calcScore(motifs, cons);
+        System.out.printf("Score: %d\n", score);
     }
 }
