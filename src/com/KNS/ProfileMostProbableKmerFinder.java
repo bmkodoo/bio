@@ -24,8 +24,6 @@ public class ProfileMostProbableKmerFinder {
         for (int i = 0; i < Text.length() - k; i++) {
             String kmer = Text.substring(i, i + k);
 
-            System.out.printf("Kmer: %s - ", kmer);
-
             double probability = 1;
             for (int pos = 0; pos < k; pos++) {
                 char base = kmer.charAt(pos);
@@ -48,15 +46,11 @@ public class ProfileMostProbableKmerFinder {
                 }
             }
 
-            System.out.printf("%2.4f ", probability);
-
             if (probability > recordProbability) {
                 recordProbability = probability;
                 recordKmer = kmer;
-                System.out.printf(" record!");
             }
 
-            System.out.println();
         }
 
         return recordKmer;
