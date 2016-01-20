@@ -10,6 +10,33 @@ package com.KNS;
  */
 public class ProfileMostProbableKmerFinder {
 
+    public static double checkProbability(String kmer, double[][] profile) {
+
+        double probability = 1;
+        for (int pos = 0; pos < kmer.length(); pos++) {
+            char base = kmer.charAt(pos);
+
+            switch (base) {
+                case 'A':
+                    probability *= profile[0][pos];
+                    break;
+                case 'C':
+                    probability *= profile[1][pos];
+                    break;
+                case 'G':
+                    probability *= profile[2][pos];
+                    break;
+                case 'T':
+                    probability *= profile[3][pos];
+                    break;
+                default:
+                    probability *= 0;
+            }
+        }
+
+        return probability;
+    }
+
     /**
      * Find a Profile-most probable k-mer in a string.
      * @param Text
@@ -21,54 +48,36 @@ public class ProfileMostProbableKmerFinder {
 
         double recordProbability = 0;
         String recordKmer = "";
-        for (int i = 0; i < Text.length() - k; i++) {
+//        System.out.printf("Probablis: ");
+        for (int i = 0; i <= Text.length() - k; i++) {
             String kmer = Text.substring(i, i + k);
 
-            double probability = 1;
-            for (int pos = 0; pos < k; pos++) {
-                char base = kmer.charAt(pos);
-
-                switch (base) {
-                    case 'A':
-                        probability *= profile[0][pos];
-                        break;
-                    case 'C':
-                        probability *= profile[1][pos];
-                        break;
-                    case 'G':
-                        probability *= profile[2][pos];
-                        break;
-                    case 'T':
-                        probability *= profile[3][pos];
-                        break;
-                    default:
-                        probability *= 0;
-                }
-            }
-
+            double probability = checkProbability(kmer, profile);
+//            System.out.printf(",%.4f", probability);
             if (probability > recordProbability) {
                 recordProbability = probability;
                 recordKmer = kmer;
+//                System.out.printf("!");
             }
 
         }
 
+//        System.out.printf(" => %s(%f)\n", recordKmer, recordProbability);
         return recordKmer;
     }
 
     public static void main(String[] args) {
 
         double profile[][] = {
-                {0.242, 0.364, 0.212, 0.091, 0.242, 0.333},
-                {0.242, 0.212, 0.303, 0.424, 0.273, 0.273},
-                {0.212, 0.333, 0.303, 0.303, 0.333, 0.303},
-                {0.303, 0.091, 0.182, 0.182, 0.152, 0.091}
+                {0.2, 0.2, 0.3, 0.2, 0.3},
+                {0.4, 0.3, 0.1, 0.5, 0.1},
+                {0.3, 0.3, 0.5, 0.2, 0.4},
+                {0.1, 0.2, 0.1, 0.1, 0.2}
         };
 
         String kmer = ProfileMostProbableKmerFinder.find(
-                "AGAGCATCCCATGCGCCCATCAAAACCATAAATGAAAAATGTCTCACGCGCCCGGTGTGATTTGAGATCACCTCGTTTCATATAACTCCTATATTAGGGT" +
-                "GTCGCGTCATGAGACTCTCCACGGAGCCTTTTTTGGCCCGAACCCTATGCGGTCCAGAGCTATCCCGCATAGAGAGACATGAGAAGCACCTGAGGCGTTA",
-                6,
+                "ACCTGTTTATTGCCTAAGTTCCGAACAAACCCAATATAGCCCGAGGGCCT",
+                5,
                 profile
         );
 
