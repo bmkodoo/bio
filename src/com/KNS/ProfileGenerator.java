@@ -3,6 +3,7 @@ package com.KNS;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Nikolai_Karulin on 1/18/2016.
@@ -39,7 +40,15 @@ public class ProfileGenerator {
         return consensusString.toString();
     }
 
-    public static double[][] generateProfile(Collection<String> motifs) {
+    public static double[][] generateProfileExceptOne(List<String> motifs, int oneIndex) {
+        List<String> exceptOneList = new LinkedList<>();
+        exceptOneList.addAll(motifs);
+        exceptOneList.subList(oneIndex, oneIndex + 1).clear();
+
+        return generateProfile(exceptOneList);
+    }
+
+    public static double[][] generateProfile(List<String> motifs) {
 
         if (motifs.size() < 1)
             return null;
@@ -76,12 +85,10 @@ public class ProfileGenerator {
             }
         }
 
-        int motifsCount = motifs.size() + 4; // Laplace's Rule
-
         //Fill profile matrix
         for (int pos = 0; pos < motifLength; pos++) {
             for (int i = 0; i < 4; i++)
-                profile[i][pos] = (double) count[i][pos]/motifsCount;
+                profile[i][pos] = (double) count[i][pos]/motifs.size();
         }
 
         return profile;
@@ -105,7 +112,7 @@ public class ProfileGenerator {
 
     public static void main(String[] args) {
 
-        Collection<String> motifs = new LinkedList<>();
+        List<String> motifs = new LinkedList<>();
         motifs.add("ACGTATGT");
         motifs.add("CCGGATGT");
         motifs.add("GCGGATGT");
