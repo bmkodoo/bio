@@ -1,5 +1,6 @@
 package com.KNS;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -53,15 +54,20 @@ public class ProfileGenerator {
         if (motifs.size() < 1)
             return null;
 
+        System.out.printf("Motifs for profile: %s\n", motifs);
+
         int motifLength = motifs.iterator().next().length();
-        int[][]     count = new int[4][motifLength];
+        double[][]  count = new double[4][motifLength];
+        double[]    sum = new double[4];
         double[][]  profile = new double[4][motifLength];
 
         for (int i = 0; i < motifLength; i++) {
             for (int j = 0; j < 4; j++) {
                 count[j][i] = 1;
                 profile[j][i] = 0;
+                sum[j] = 4;
             }
+
         }
 
         // Fill count matrix
@@ -82,14 +88,23 @@ public class ProfileGenerator {
                     case 'T':
                         count[3][pos]++;
                 }
+
+                sum[pos]++;
             }
         }
+
+        //System.out.printf("Count:\n");
+        //printProfile(count, System.out);
+        //System.out.printf("Sum: %s\n", Arrays.toString(sum));
 
         //Fill profile matrix
         for (int pos = 0; pos < motifLength; pos++) {
             for (int i = 0; i < 4; i++)
-                profile[i][pos] = (double) count[i][pos]/motifs.size();
+                profile[i][pos] = count[i][pos] / sum[i];
         }
+
+        //System.out.printf("Profile:\n");
+        //printProfile(profile, System.out);
 
         return profile;
     }
@@ -108,6 +123,33 @@ public class ProfileGenerator {
         }
 
         return score;
+    }
+
+    public static void printProfile(double[][] profile, PrintStream out) {
+
+        int motifLength = profile[0].length;
+
+        System.out.printf("A: ");
+        for (int i = 0; i < motifLength; i++) {
+            System.out.printf(" %1.3f", profile[0][i]);
+        }
+
+        System.out.printf("\nC: ");
+        for (int i = 0; i < motifLength; i++) {
+            System.out.printf(" %1.3f", profile[1][i]);
+        }
+
+        System.out.printf("\nG: ");
+        for (int i = 0; i < motifLength; i++) {
+            System.out.printf(" %1.3f", profile[2][i]);
+        }
+
+        System.out.printf("\nT: ");
+        for (int i = 0; i < motifLength; i++) {
+            System.out.printf(" %1.3f", profile[3][i]);
+        }
+
+        System.out.println("");
     }
 
     public static void main(String[] args) {
