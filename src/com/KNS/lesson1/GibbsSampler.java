@@ -1,12 +1,10 @@
-package com.KNS;
+package com.KNS.lesson1;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-import static com.KNS.ProfileGenerator.*;
 
 /**
  * Created by Nikolai_Karulin on 1/18/2016.
@@ -22,34 +20,41 @@ public class GibbsSampler {
 
     public static List<String> search(int N, int k, List<String> dna) {
 
-        List<String> bestMotifs = null;
-
+        List<String> bestMotifs = new LinkedList<>();
         List<String> motifs = new LinkedList<>();
+
         final Random random = new Random();
         for (String seq : dna) {
             int dice = random.nextInt(seq.length() - k);
             motifs.add(seq.substring(dice, dice + k));
         }
 
-        bestMotifs = motifs;
+        bestMotifs.addAll(motifs);
         int bestMotifsScore =
-                calcScore(bestMotifs, genConsensusString(generateProfile(bestMotifs)));
+                ProfileGenerator.calcScore(bestMotifs, ProfileGenerator.genConsensusString(ProfileGenerator.generateProfile(bestMotifs)));
 
-        for (int j = 0; j < N; ) {
-            int deselectedSeqIndex = random.nextInt(dna.size() - 1);
+        int deselectedSeqIndex = -1;
+        for (int j = 0; j < N; j++) {
 
-            double[][] profile = generateProfileExceptOne(motifs, deselectedSeqIndex);
+            int dice;
+            do {
+                dice = random.nextInt(dna.size() - 1);
+            } while (dice == deselectedSeqIndex);
 
-            //String selectedMotif = generateProfileRandomlyKmer(dna.get(deselectedSeqIndex), k, profile);
-            String selectedMotif = ProfileMostProbableKmerFinder.find(dna.get(deselectedSeqIndex), k, profile);
+            deselectedSeqIndex = dice;
+
+            double[][] profile = ProfileGenerator.generateProfileExceptOne(motifs, deselectedSeqIndex);
+
+            String selectedMotif = generateProfileRandomlyKmer(dna.get(deselectedSeqIndex), k, profile);
+            //String selectedMotif = ProfileMostProbableKmerFinder.find(dna.get(deselectedSeqIndex), k, profile);
 
             motifs.set(deselectedSeqIndex, selectedMotif);
 
-            int motifScore = calcScore(motifs, genConsensusString(profile));
+            int motifScore = ProfileGenerator.calcScore(motifs, ProfileGenerator.genConsensusString(ProfileGenerator.generateProfile(motifs)));
             if (motifScore < bestMotifsScore) {
-                bestMotifs = motifs;
+                bestMotifs.clear();
+                bestMotifs.addAll(motifs);
                 bestMotifsScore = motifScore;
-                System.out.printf("Score!: %d\n", bestMotifsScore);
             }
 
         }
@@ -61,15 +66,17 @@ public class GibbsSampler {
 
         Double[] probes = new Double[seq.length() - k];
 
-        System.out.printf("Diapasons: ");
+//        System.out.printf("Diapasons: ");
         for (int i = 0; i < seq.length() - k; i++) {
             probes[i] = ProfileMostProbableKmerFinder.checkProbability(seq.substring(i, i + k), profile);
-            probes[i] *= 1000;
+            probes[i] *= 100000;
+
+//            System.out.printf("%d:(%.2f)", i, probes[i]);
 
             if (i != 0)
                 probes[i] += probes[i - 1];
 
-            System.out.printf("%.2f|", probes[i]);
+            //System.out.printf("%.2f|", probes[i]);
         }
 
         double randomStrike = new Random().nextDouble() * probes[probes.length - 1];
@@ -82,7 +89,7 @@ public class GibbsSampler {
             }
         }
 
-        System.out.printf(" striked at %1.2f\n", probes[selectedMotif]);
+//        System.out.printf(" striked at %d(%1.2f)\n", selectedMotif, probes[selectedMotif]);
 
         return seq.substring(selectedMotif, selectedMotif + k);
     }
@@ -101,17 +108,29 @@ public class GibbsSampler {
             e.printStackTrace();
         }
 
-        List<String> motifsConon = new LinkedList<>();
-        motifsConon.add("TCTCGGGG");
-        motifsConon.add("CCAAGGTG");
-        motifsConon.add("TACAGGCG");
-        motifsConon.add("TTCAGGTG");
-        motifsConon.add("TCCACGTG");
-        System.out.printf("Goal score: %d\n", calcScore(motifsConon, genConsensusString(generateProfile(motifsConon))));
+//        List<String> motifsConon = new LinkedList<>();
+//        motifsConon.add("TCTCGGGG");
+//        motifsConon.add("CCAAGGTG");
+//        motifsConon.add("TACAGGCG");
+//        motifsConon.add("TTCAGGTG");
+//        motifsConon.add("TCCACGTG");
+//        System.out.printf("Goal score: %d\n", calcScore(motifsConon, genConsensusString(generateProfile(motifsConon))));
 
-        List<String> bestMotifs = search(2000, 8, genome);
-        System.out.printf("Best: %s, score: %d\n",
-                bestMotifs,
-                calcScore(bestMotifs, genConsensusString(generateProfile(bestMotifs))));
+        int recordScore = Integer.MAX_VALUE;
+        List<String> recordMotifs = null;
+
+        for (int i = 0; i < 200; i++) {
+            List<String> bestMotifs = search(2000, 15, genome);
+            int score = ProfileGenerator.calcScore(bestMotifs, ProfileGenerator.genConsensusString(ProfileGenerator.generateProfile(bestMotifs)));
+
+            if (score < recordScore) {
+                recordScore = score;
+                recordMotifs = bestMotifs;
+            }
+        }
+
+        System.out.printf("Best score: %d\n", recordScore);
+        for (String motif : recordMotifs)
+            System.out.printf("%s\n", motif);
     }
 }

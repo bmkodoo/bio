@@ -1,12 +1,10 @@
-package com.KNS;
+package com.KNS.lesson1;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-import static com.KNS.ProfileGenerator.*;
 
 /**
  * Created by Nikolai_Karulin on 1/18/2016.
@@ -29,12 +27,12 @@ public class GreedyMotifSearcher {
 
             while (dnaIt.hasNext()) {
                 motifs.add(ProfileMostProbableKmerFinder.find(
-                        dnaIt.next(), k, generateProfile(motifs)
+                        dnaIt.next(), k, ProfileGenerator.generateProfile(motifs)
                 ));
                 System.out.printf("add, motifs: %s\n", motifs);
             }
 
-            int score = calcScore(motifs, genConsensusString(generateProfile(motifs)));
+            int score = ProfileGenerator.calcScore(motifs, ProfileGenerator.genConsensusString(ProfileGenerator.generateProfile(motifs)));
             if (score < bestScore) {
                 bestMitifs = motifs;
                 bestScore = score;

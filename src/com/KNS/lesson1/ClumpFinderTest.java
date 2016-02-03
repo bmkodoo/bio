@@ -1,4 +1,4 @@
-package com.KNS;
+package com.KNS.lesson1;
 
 import org.junit.Test;
 

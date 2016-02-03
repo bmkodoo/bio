@@ -1,4 +1,4 @@
-package com.KNS;
+package com.KNS.lesson1;
 
 /**
  * Created by Nikolai_Karulin on 1/18/2016.

@@ -1,4 +1,4 @@
-package com.KNS;
+package com.KNS.lesson1;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class ProfileGenerator {
         for (int pos = 0; pos < profile[0].length; pos++) {
             double scoreRecord = 0;
             int baseRecord = -1;
-            for (int baseType = 0; baseType < profile.length; baseType++) {
+            for (int baseType = 0; baseType < 4; baseType++) {
                 if (profile[baseType][pos] > scoreRecord) {
                     scoreRecord = profile[baseType][pos];
                     baseRecord = baseType;
@@ -54,11 +54,9 @@ public class ProfileGenerator {
         if (motifs.size() < 1)
             return null;
 
-        System.out.printf("Motifs for profile: %s\n", motifs);
-
         int motifLength = motifs.iterator().next().length();
         double[][]  count = new double[4][motifLength];
-        double[]    sum = new double[4];
+        double[]    sum = new double[motifLength];
         double[][]  profile = new double[4][motifLength];
 
         for (int i = 0; i < motifLength; i++) {

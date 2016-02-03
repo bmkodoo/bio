@@ -1,4 +1,4 @@
-package com.KNS;
+package com.KNS.lesson1;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
