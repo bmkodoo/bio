@@ -6,8 +6,15 @@ import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.KNS.contigs.Lisp.head;
+import static com.KNS.contigs.Lisp.tail;
+
 /**
- * Created by Nikolai_Karulin on 2/10/2016.
+ * Compute the Score of a Linear Peptide
+ *
+ * Compute the score of a linear peptide with respect to a spectrum.
+ * Given: An amino acid string Peptide and a collection of integers LinearSpectrum.
+ * Return: The linear score of Peptide against Spectrum, LinearScore(Peptide, Spectrum).
  */
 public class Spectrum {
 
@@ -54,7 +61,6 @@ public class Spectrum {
             for (int pos = 0; pos <= acid.length() - partLength; pos++) {
                 String substring = acid.substring(pos, pos + partLength);
                 spectrum.add(calcMass(substring));
-                System.out.printf(" %s (%d)\n", substring, calcMass(substring));
             }
         }
 
@@ -62,26 +68,27 @@ public class Spectrum {
     }
 
     public static int score(List<Integer> theoretic, List<Integer> practice) {
-        Iterator<Integer> theorIt = theoretic.iterator();
-        Iterator<Integer> practIt = practice.iterator();
 
-        while (theorIt.hasNext()) {
-            int th = theorIt.next();
+        if (theoretic.size() == 0)
+            return 0;
 
-            int pr;
-            while (practIt.hasNext() && (pr = practIt.next()) != th) {
-                System.out.printf("diff(%d)\n", pr);
-            }
-        }
+        if (practice.size() == 0)
+            return 0;
 
-        return 0;
+        if (head(theoretic) > head(practice))
+            return score(theoretic, tail(practice));
+
+        if (head(theoretic) < head(practice))
+            return score(tail(theoretic), practice);
+
+        return 1 + score(tail(theoretic), tail(practice));
     }
 
     public static void main(String[] args) {
         init();
 
         List<Integer> specter = new ArrayList<>();
-        try (Scanner in = new Scanner(new BufferedReader(new FileReader("Files/genome.fa")))) {
+        try (Scanner in = new Scanner(new BufferedReader(new FileReader("Files/spectrum")))) {
             while (in.hasNextInt()) {
                 specter.add(in.nextInt());
             }
@@ -89,7 +96,10 @@ public class Spectrum {
             e.printStackTrace();
         }
 
-        List<Integer> theor = generate("NQEL").stream().sorted().collect(Collectors.toList());
+        List<Integer> theor = generate("QGEELLWNCRTGDDYSGGFMLVTYEAFRPMEDKCHHR")
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
 
         System.out.printf("Score: %d\n", score(theor, specter));
     }
