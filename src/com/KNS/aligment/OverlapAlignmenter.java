@@ -10,32 +10,23 @@ import java.io.IOException;
  */
 public class OverlapAlignmenter {
 
-    String protein1;
-    String protein2;
 
     public static void main(String[] args) {
-        OverlapAlignmenter alignmenter = new OverlapAlignmenter();
-        alignmenter.loadProteins("Files/twoProteins.txt");
-        ManhattanGraph graph = new ManhattanGraph(
-                alignmenter.getProtein1().length(),
-                alignmenter.getProtein2().length()
-        );
-    }
+        String protein1;
+        String protein2;
+        ManhattanGraph graph = null;
 
-    void loadProteins(String fileName) {
-        try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader in = new BufferedReader(new FileReader("Files/twoProteins.txt"))) {
             protein1 = in.readLine();
             protein2 = in.readLine();
+
+            graph = new ManhattanGraph(
+                    protein1,
+                    protein2
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    public String getProtein1() {
-        return protein1;
-    }
-
-    public String getProtein2() {
-        return protein2;
     }
 }
