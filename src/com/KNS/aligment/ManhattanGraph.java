@@ -142,7 +142,7 @@ public class ManhattanGraph {
                 x2 + y2 * width);
     }
 
-    class Node {
+    private static class Node {
         public int x = -1;
         public int y = -1;
         public int value = Integer.MIN_VALUE;
