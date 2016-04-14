@@ -17,7 +17,7 @@ public class ManhattanGraph {
     static int PENALTY = -2;
     static int SCORE = 1;
 
-    private DirectedGraph<Integer, DefaultEdge> graph;
+    private DirectedGraph<Integer, DefaultEdge> graph   ;
     private int[][] matrix;
     private int width;
     private int height;
