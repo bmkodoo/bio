@@ -10,11 +10,11 @@ import java.util.Scanner;
  */
 public class MatrixLoader {
 
-    public static int[][] loadFromFile(String fileName) {
+    public static double[][] loadFromFile(String fileName) {
         try (FileInputStream in = new FileInputStream(new File(fileName))) {
             Scanner scanner = new Scanner(in);
             final int size = scanner.nextInt();
-            int[][] loadingMatrix = new int[size][size];
+            double[][] loadingMatrix = new double[size][size];
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
                     loadingMatrix[y][x] = scanner.nextInt();
